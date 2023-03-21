@@ -2,12 +2,11 @@ import { useState } from 'react'
 import NewBlogForm from './NewBlogForm'
 import blogService from '../services/blogs'
 
-const Togglable = ({setMessage, blogs, setBlogs}) => {
+const Togglable = ({ setMessage, blogs, setBlogs }) => {
   const [visible, setVisible] = useState(false)
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
- 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
@@ -43,21 +42,21 @@ const Togglable = ({setMessage, blogs, setBlogs}) => {
 
   return (
     <div>
-        <div style={hideWhenVisible}>
-            <button onClick={() => setVisible(true)}>Create new blog</button>
-        </div>
-        <div style={showWhenVisible}>
-            <NewBlogForm 
-            handleCreate={handleCreate} 
-            title={title} 
-            author={author} 
-            url={url}  
-            titleChange={handleTitleChange}
-            authorChange={handleAuthorChange}
-            urlChange={handleUrlChange}
-            />
-            <button onClick={toggleVisibility}>cancel</button>
-        </div>
+      <div style={hideWhenVisible}>
+        <button onClick={() => setVisible(true)}>Create new blog</button>
+      </div>
+      <div style={showWhenVisible}>
+        <NewBlogForm
+          handleCreate={handleCreate}
+          title={title}
+          author={author}
+          url={url}
+          titleChange={handleTitleChange}
+          authorChange={handleAuthorChange}
+          urlChange={handleUrlChange}
+        />
+        <button onClick={toggleVisibility}>cancel</button>
+      </div>
     </div>
   )
 }

@@ -12,9 +12,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  
+
   const [message, setMessage] = useState(null)
- 
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -43,44 +43,50 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
-  
+
   const handleUsernameChange = (event) => {
     setUsername(event.target.value)
   }
   const handlePasswordChange = (event) => {
     setPassword(event.target.value)
   }
-  
- 
+
+
   if (!user) {
     return (
       <div>
         <h2>Log in to application</h2>
         <Notification message={message} />
-        <LoginForm 
-        handleLogin={handleLogin} 
-        username={username} 
-        password={password} 
-        userNameChange={handleUsernameChange}
-        passwordChange={handlePasswordChange} />
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+          usernameChange={handleUsernameChange}
+          passwordChange={handlePasswordChange} />
       </div>
     )
   }
-    return (
-      <div>
-        <h2>blogs</h2>
-        <Notification message={message} />
-        <p> {user.name} logged in <button onClick={handleLogout}>logout</button></p>
-        <Togglable 
+  return (
+    <div>
+      <h2>blogs</h2>
+      <Notification message={message} />
+      <p> {user.name} logged in <button onClick={handleLogout}>logout</button></p>
+      <Togglable
         buttonLabel="new blog"
         setMessage={setMessage}
         blogs={blogs}
         setBlogs={setBlogs}
-        />
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}    
-      </div>
+      />
+      {blogs.sort((a,b) => {
+        return b.likes - a.likes
+      }).map(blog =>
+        <Blog
+          key={blog.id}
+          blog={blog}
+          blogs={blogs}
+          setBlogs={setBlogs} />
+      )}
+    </div>
   )
 }
 
