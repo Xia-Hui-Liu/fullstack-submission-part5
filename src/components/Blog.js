@@ -11,19 +11,17 @@ const Blog = ({ blog, blogs, setBlogs }) => {
     setBlogVisible(!blogVisible)
   }
 
-  const handleUpdate = (e) => {
-    e.preventDefault()
-
-    const updatedBlog = {
-      user: blog.user.id,
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url
+  const handleUpdate = async () => {
+    try {
+      const updatedBlog = await blogService.update(blog.id,{
+        ...blog,
+        likes: blog.likes + 1
+      })
+      setLikes(likes + 1)
+      setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+    } catch (error) {
+      console.error(error)
     }
-
-    blogService.update(blog.id, updatedBlog)
-    setLikes(likes + 1)
   }
 
   const handleRemove = async () => {
@@ -35,12 +33,12 @@ const Blog = ({ blog, blogs, setBlogs }) => {
 
   return (
     <div className='blog-style'>
-      {blog.title} {blog.author} <button onClick={toggleVisibility}>view</button>
+      {blog.title} {blog.author} <button data-testid={`view-button-${blog.id}`} onClick={toggleVisibility}>view</button>
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
         <p>likes {likes} <button onClick={handleUpdate}>like</button></p>
         <p>{blog.user.name}</p>
-        <button type='button' onClick={handleRemove}>remove</button>
+        <button type='button' data-testid={`remove-button-${blog.id}`} onClick={handleRemove}>remove</button>
       </div>
     </div>
   )

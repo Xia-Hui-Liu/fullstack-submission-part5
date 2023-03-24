@@ -84,7 +84,8 @@ const App = () => {
           key={blog.id}
           blog={blog}
           blogs={blogs}
-          setBlogs={setBlogs} />
+          setBlogs={setBlogs}
+        />
       )}
     </div>
   )
