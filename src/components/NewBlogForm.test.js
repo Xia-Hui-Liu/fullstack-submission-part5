@@ -1,42 +1,30 @@
-// import React from 'react'
-// import { render, screen, fireEvent } from '@testing-library/react'
-// import NewBlogForm from './NewBlogForm'
+import React from 'react'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import NewBlogForm from './NewBlogForm'
 
-// describe('<NewBlogForm />', () => {
-//   test('submitting the form calls the handleCreate function with the correct values', () => {
-//     const handleCreate = jest.fn()
-//     const title = 'Test title'
-//     const author = 'Test author'
-//     const url = 'http://example.com'
-//     render(
-//       <NewBlogForm
-//         handleCreate={handleCreate}
-//         title={title}
-//         author={author}
-//         url={url}
-//         titleChange={}
-//         authorChange={}
-//         urlChange={}
-//       />
-//     )
+describe('NewBlogForm', () => {
+  test('calls event handler with correct details when a new blog is created', () => {
+    const onSubmit = jest.fn()
+    render(<NewBlogForm onSubmit={onSubmit} />)
+    screen.debug()
 
-//     const titleInput = screen.getByLabelText('Title Content')
-//     fireEvent.change(titleInput, { target: { value: 'New title' } })
+    const titleInput = screen.getByLabelText('Title')
+    const authorInput = screen.getByLabelText('Author')
+    const urlInput = screen.getByLabelText('URL')
 
-//     const authorInput = screen.getByLabelText('Test author')
-//     fireEvent.change(authorInput, { target: { value: 'New author' } })
+    const testBlog = {
+      title: 'Test Blog',
+      author: 'Test Author',
+      url: 'http://www.example.com/test-blog',
+    }
 
-//     const urlInput = screen.getByLabelText('http://example.com')
-//     fireEvent.change(urlInput, { target: { value: 'http://new-example.com' } })
+    userEvent.type(titleInput, testBlog.title)
+    userEvent.type(authorInput, testBlog.author)
+    userEvent.type(urlInput, testBlog.url)
+    userEvent.click(screen.getByRole('button', { name: 'Create' }))
 
-//     const sendButton = screen.getByText('create')
-//     fireEvent.click(sendButton)
-
-//     expect(handleCreate).toHaveBeenCalledTimes(1)
-//     expect(handleCreate).toHaveBeenCalledWith({
-//       title: 'New title',
-//       author: 'New author',
-//       url: 'http://new-example.com',
-//     })
-//   })
-// })
+    expect(onSubmit.mock.calls).toHaveLength(1)
+    expect(onSubmit.mock.calls[0][0].title).toBe('Test Blog')
+  })
+})

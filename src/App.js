@@ -6,6 +6,7 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import NewBlogForm from './components/NewBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +15,11 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const [message, setMessage] = useState(null)
+
+
+  useEffect(() => {
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -35,14 +41,9 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    sessionStorage.setItem('loggedIn', false)
+    sessionStorage.removeItem('loggedIn')
     setUser(null)
   }
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
-
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value)
@@ -51,32 +52,42 @@ const App = () => {
     setPassword(event.target.value)
   }
 
+  const handleCreate = async (blogObject) => {
+    try {
+      const returnedBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(returnedBlog))
+      setMessage(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+    } catch (exception) {
+      setMessage('something went wrong')
+    }
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }
+
 
   if (!user) {
     return (
       <div>
         <h2>Log in to application</h2>
         <Notification message={message} />
-        <LoginForm
-          handleLogin={handleLogin}
-          username={username}
-          password={password}
-          usernameChange={handleUsernameChange}
-          passwordChange={handlePasswordChange} />
+        <Togglable buttonLabel="login">
+          <LoginForm
+            handleLogin={handleLogin}
+            username={username}
+            password={password}
+            usernameChange={handleUsernameChange}
+            passwordChange={handlePasswordChange}
+          />
+        </Togglable>
       </div>
-    )
-  }
-  return (
+    )}
+  return(
     <div>
       <h2>blogs</h2>
       <Notification message={message} />
       <p> {user.name} logged in <button onClick={handleLogout}>logout</button></p>
-      <Togglable
-        buttonLabel="new blog"
-        setMessage={setMessage}
-        blogs={blogs}
-        setBlogs={setBlogs}
-      />
+      <NewBlogForm createBlog={handleCreate} />
       {blogs.sort((a,b) => {
         return b.likes - a.likes
       }).map(blog =>
