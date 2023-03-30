@@ -7,9 +7,9 @@ describe('NewBlogForm', () => {
   test('calls event handler with correct details when a new blog is created', async() => {
     const onSubmit = jest.fn()
     const user = userEvent.setup()
-    render(<NewBlogForm createBlog={onSubmit} />) 
+    render(<NewBlogForm createBlog={onSubmit} />)
 
-    const titleInput = screen.getByLabelText('Title') 
+    const titleInput = screen.getByLabelText('Title')
     const authorInput = screen.getByLabelText('Author')
     const urlInput = screen.getByLabelText('URL')
 
