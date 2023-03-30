@@ -4,12 +4,12 @@ import userEvent from '@testing-library/user-event'
 import NewBlogForm from './NewBlogForm'
 
 describe('NewBlogForm', () => {
-  test('calls event handler with correct details when a new blog is created', () => {
+  test('calls event handler with correct details when a new blog is created', async() => {
     const onSubmit = jest.fn()
-    render(<NewBlogForm onSubmit={onSubmit} />)
-    screen.debug()
+    const user = userEvent.setup()
+    render(<NewBlogForm createBlog={onSubmit} />) 
 
-    const titleInput = screen.getByLabelText('Title')
+    const titleInput = screen.getByLabelText('Title') 
     const authorInput = screen.getByLabelText('Author')
     const urlInput = screen.getByLabelText('URL')
 
@@ -19,10 +19,10 @@ describe('NewBlogForm', () => {
       url: 'http://www.example.com/test-blog',
     }
 
-    userEvent.type(titleInput, testBlog.title)
-    userEvent.type(authorInput, testBlog.author)
-    userEvent.type(urlInput, testBlog.url)
-    userEvent.click(screen.getByRole('button', { name: 'Create' }))
+    await user.type(titleInput, testBlog.title)
+    await user.type(authorInput, testBlog.author)
+    await user.type(urlInput, testBlog.url)
+    await user.click(screen.getByText('create'))
 
     expect(onSubmit.mock.calls).toHaveLength(1)
     expect(onSubmit.mock.calls[0][0].title).toBe('Test Blog')

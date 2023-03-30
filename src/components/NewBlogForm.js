@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react'
 
 const NewBlogForm = ({ createBlog }) => {
@@ -28,35 +27,39 @@ const NewBlogForm = ({ createBlog }) => {
       <h2>create new</h2>
       <form onSubmit={addBlog}>
         <div>
-            title:
+          <label htmlFor="title">Title</label>
           <input
             type='text'
             value={title}
             name='title'
+            id='title'
             onChange={handleTitleChange}
           />
         </div>
         <div>
-              author:
+          <label htmlFor="author">Author</label>
           <input
             type='text'
             value={author}
-            name='title'
+            name='author'
+            id='author'
             onChange={handleAuthorChange}
           />
         </div>
         <div>
-              url:
+          <label htmlFor="url">URL</label>
           <input
             type='url'
             value={url}
             name='url'
+            id='url'
             onChange={handleUrlChange}
           />
         </div>
         <button type='submit'>create</button>
       </form>
     </div>
-  )}
+  )
+}
 
 export default NewBlogForm
