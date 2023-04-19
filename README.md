@@ -2,7 +2,7 @@
 ## React Blog App
 This is a simple blogging app created using ReactJS. It allows users to log in, create new blog posts, and view existing posts.
 
-###cDependencies
+### Dependencies
 This app uses the following dependencies:
 
 - ReactJS
