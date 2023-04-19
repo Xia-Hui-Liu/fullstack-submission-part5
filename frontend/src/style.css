@@ -1,18 +1,24 @@
 .message {
-    background-color: lightgray;
-    color: green;
-    font-size: 1.5em;
-    /* border: 3px solid green ; */
+  background-color: lightgray;
+  color: green;
+  font-size: 1.5em;
+  /* border: 3px solid green ; */
 }
 
 .blog-style {
-    padding-top: 10px;
-    padding-left: 2px;
-    border: solid;
-    border-width: 1px;
-    margin-bottom: 5px;
+  padding-top: 10px;
+  padding-left: 2px;
+  border: solid;
+  border-width: 1px;
+  margin-bottom: 5px;
 }
 
 .blog-list {
-    text-align: left;
+  text-align: left;
+}
+
+.blog {
+  margin: 6px;
+  padding: 5px;
+  border: solid black ;
 }

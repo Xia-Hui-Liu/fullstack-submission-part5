@@ -1,20 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import storageService from './services/storage'
 
-import LoginForm from './components/Login'
+import LoginForm from './components/LoginForm'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState('')
-  const [info, setInfo] = useState({ message: null })
-
   const blogFormRef = useRef()
+  const notification = useSelector((state) => state.notification)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const user = storageService.loadUser()
@@ -22,18 +24,14 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService.getAll().then((blogs) => setBlogs(blogs))
   }, [])
 
-  const notifyWith = (message, type='info') => {
-    setInfo({
-      message, type
-    })
+  const notifyWith = (message) => {
+    dispatch(setNotification(message))
 
     setTimeout(() => {
-      setInfo({ message: null } )
+      dispatch(setNotification(null))
     }, 3000)
   }
 
@@ -43,7 +41,7 @@ const App = () => {
       setUser(user)
       storageService.saveUser(user)
       notifyWith('welcome!')
-    } catch(e) {
+    } catch (e) {
       notifyWith('wrong username or password', 'error')
     }
   }
@@ -64,8 +62,8 @@ const App = () => {
   const like = async (blog) => {
     const blogToUpdate = { ...blog, likes: blog.likes + 1, user: blog.user.id }
     const updatedBlog = await blogService.update(blogToUpdate)
-    notifyWith(`A like for the blog '${blog.title}' by '${blog.author}'`)
-    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+    dispatch(setNotification(`A like for the blog '${blog.title}' by '${blog.author}'`))
+    setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)))
   }
 
   const remove = async (blog) => {
@@ -73,16 +71,15 @@ const App = () => {
     if (ok) {
       await blogService.remove(blog.id)
       notifyWith(`The blog' ${blog.title}' by '${blog.author} removed`)
-      setBlogs(blogs.filter(b => b.id !== blog.id))
+      setBlogs(blogs.filter((b) => b.id !== blog.id))
     }
-
   }
 
   if (!user) {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification info={info} />
+        <Notification message={notification} />
         <LoginForm login={login} />
       </div>
     )
@@ -93,12 +90,12 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification info={info} />
+      <Notification message={notification} />
       <div>
         {user.name} logged in
         <button onClick={logout}>logout</button>
       </div>
-      <Togglable buttonLabel='new note' ref={blogFormRef}>
+      <Togglable buttonLabel='new blog' ref={blogFormRef}>
         <NewBlog createBlog={createBlog} />
       </Togglable>
       <div>
